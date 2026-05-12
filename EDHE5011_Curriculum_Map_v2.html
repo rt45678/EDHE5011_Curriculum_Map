@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teaching Portfolio — Curriculum Map</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #ffffff; color: #333; padding: 20px; }
+  .hint { font-size: 13px; color: #888; text-align: center; margin-bottom: 12px; }
+  .map-wrap { position: relative; max-width: 1200px; margin: 0 auto; }
+
+  .node { cursor: pointer; transition: opacity 0.25s; }
+
+  .dimmed { opacity: 0.15; }
+  .highlighted rect, .highlighted ellipse { stroke-width: 3 !important; filter: drop-shadow(0 0 6px rgba(28,171,78,0.5)); }
+  .connection-line { opacity: 0; transition: opacity 0.25s; }
+  .connection-line.active { opacity: 1; }
+
+  .detail-panel {
+    margin-top: 16px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+    display: none;
+  }
+  .detail-panel.visible { display: block; }
+  .detail-panel h3 { font-size: 15px; font-weight: bold; margin: 0 0 6px; color: #0a1128; }
+  .detail-panel p { margin: 0 0 8px; color: #555; font-size: 13px; }
+  .tag { display: inline-block; background: #e8f5e9; border-radius: 4px; padding: 2px 8px; font-size: 11px; margin: 2px 2px 0 0; color: #0F6E56; font-weight: bold; }
+  .reset-btn { display: inline-block; margin-top: 10px; cursor: pointer; font-size: 12px; color: #1cab4e; border: 1px solid #1cab4e; border-radius: 4px; padding: 4px 10px; }
+  .reset-btn:hover { background: #1cab4e; color: #fff; }
+  svg text { font-family: Arial, sans-serif; }
+</style>
+</head>
+<body>
+
+<p class="hint">Click any box to see how it connects through the unit</p>
+
+<div class="map-wrap">
+<svg id="map" width="100%" viewBox="0 0 1200 700" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Teaching Portfolio curriculum map</title>
+  <desc>Interactive diagram showing how prior GradCert units connect through ULOs and assessments to professional recognition pathways.</desc>
+
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-hi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1cab4e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- ═══ BACKGROUND STATIC ARROWS (always visible, thin) ═══ -->
+  <!-- Left to centre unit -->
+  <line x1="220" y1="92" x2="328" y2="162" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="220" y1="192" x2="328" y2="188" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="220" y1="292" x2="328" y2="214" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="220" y1="392" x2="328" y2="238" stroke="#ccc" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+  <!-- ULOs to assessments -->
+  <line x1="450" y1="396" x2="420" y2="434" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="580" y1="396" x2="580" y2="434" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="710" y1="396" x2="740" y2="434" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <!-- Assessments to portfolio -->
+  <line x1="407" y1="506" x2="520" y2="552" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="580" y1="506" x2="580" y2="552" stroke="#ccc" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="752" y1="506" x2="638" y2="552" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <!-- Portfolio to pathways -->
+  <line x1="728" y1="572" x2="958" y2="492" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="728" y1="580" x2="958" y2="548" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="728" y1="588" x2="958" y2="604" stroke="#ccc" stroke-width="1" marker-end="url(#arr)"/>
+  <!-- Portfolio to institutional -->
+  <line x1="579" y1="610" x2="579" y2="640" stroke="#ccc" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+
+  <!-- ═══ HIGHLIGHT ARROWS (hidden until activated) ═══ -->
+  <!-- lc → ulo1,ulo2,ulo4 → a1 -->
+  <line class="connection-line" data-conn="lc" x1="220" y1="92" x2="328" y2="162" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- dt → ulo1,ulo3 → a2 -->
+  <line class="connection-line" data-conn="dt" x1="220" y1="192" x2="328" y2="188" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- sotl → ulo3,ulo5 → a2,a3 -->
+  <line class="connection-line" data-conn="sotl" x1="220" y1="292" x2="328" y2="214" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- exp → all -->
+  <line class="connection-line" data-conn="exp" x1="220" y1="392" x2="328" y2="238" stroke="#1cab4e" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#arr-hi)"/>
+
+  <!-- ULO1 → a1,a2,a3 -->
+  <line class="connection-line" data-conn="ulo1 a1 a2 a3" x1="450" y1="396" x2="420" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="ulo1 a1 a2 a3" x1="580" y1="396" x2="580" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="ulo1 a1 a2 a3" x1="710" y1="396" x2="740" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- ULO2 → a1,a3 -->
+  <line class="connection-line" data-conn="ulo2 a1 a3" x1="450" y1="396" x2="420" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="ulo2 a1 a3" x1="710" y1="396" x2="740" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- ULO3 → a2,a3 -->
+  <line class="connection-line" data-conn="ulo3 a2 a3" x1="580" y1="396" x2="580" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="ulo3 a2 a3" x1="710" y1="396" x2="740" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- ULO4 → a1,a2,a3 -->
+  <line class="connection-line" data-conn="ulo4 a1 a2 a3" x1="450" y1="396" x2="420" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="ulo4 a1 a2 a3" x1="580" y1="396" x2="580" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="ulo4 a1 a2 a3" x1="710" y1="396" x2="740" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- ULO5 → a2,a3 -->
+  <line class="connection-line" data-conn="ulo5 a2 a3" x1="580" y1="396" x2="580" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="ulo5 a2 a3" x1="710" y1="396" x2="740" y2="434" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+
+  <!-- a1 → portfolio -->
+  <line class="connection-line" data-conn="a1 portfolio advhe aaut herdsa inst" x1="407" y1="506" x2="520" y2="552" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- a2 → portfolio -->
+  <line class="connection-line" data-conn="a2 portfolio advhe aaut herdsa inst" x1="580" y1="506" x2="580" y2="552" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <!-- a3 → portfolio -->
+  <line class="connection-line" data-conn="a3 portfolio advhe aaut herdsa inst" x1="752" y1="506" x2="638" y2="552" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+
+  <!-- portfolio → pathways -->
+  <line class="connection-line" data-conn="portfolio advhe aaut herdsa inst" x1="728" y1="572" x2="958" y2="492" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="portfolio advhe aaut herdsa inst" x1="728" y1="580" x2="958" y2="548" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="portfolio advhe aaut herdsa inst" x1="728" y1="588" x2="958" y2="604" stroke="#1cab4e" stroke-width="2.5" marker-end="url(#arr-hi)"/>
+  <line class="connection-line" data-conn="portfolio advhe aaut herdsa inst" x1="579" y1="610" x2="579" y2="640" stroke="#1cab4e" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#arr-hi)"/>
+
+  <!-- Column headers -->
+  <text x="120" y="24" text-anchor="middle" font-size="13" fill="#888">Prior units</text>
+  <text x="580" y="24" text-anchor="middle" font-size="13" fill="#888">Teaching Portfolio unit</text>
+  <text x="1075" y="24" text-anchor="middle" font-size="13" fill="#888">Professional pathways</text>
+
+  <!-- ═══ LEFT COLUMN ═══ -->
+  <g class="node" id="n-lc" data-id="lc" onclick="activate(this)">
+    <rect x="20" y="60" width="200" height="64" rx="8" fill="#085041" stroke="#085041" stroke-width="0.5"/>
+    <text x="120" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="#9FE1CB">The Learning Cycle</text>
+    <text x="120" y="104" text-anchor="middle" font-size="12" fill="#5DCAA5">Design and Curriculum</text>
+  </g>
+  <g class="node" id="n-dt" data-id="dt" onclick="activate(this)">
+    <rect x="20" y="160" width="200" height="64" rx="8" fill="#085041" stroke="#085041" stroke-width="0.5"/>
+    <text x="120" y="184" text-anchor="middle" font-size="13" font-weight="bold" fill="#9FE1CB">Design Thinking</text>
+    <text x="120" y="204" text-anchor="middle" font-size="12" fill="#5DCAA5">Educational Innovation</text>
+  </g>
+  <g class="node" id="n-sotl" data-id="sotl" onclick="activate(this)">
+    <rect x="20" y="260" width="200" height="64" rx="8" fill="#085041" stroke="#085041" stroke-width="0.5"/>
+    <text x="120" y="284" text-anchor="middle" font-size="13" font-weight="bold" fill="#9FE1CB">Research for SoTL</text>
+    <text x="120" y="304" text-anchor="middle" font-size="12" fill="#5DCAA5">Scholarship of Teaching</text>
+  </g>
+  <g class="node" id="n-exp" data-id="exp" onclick="activate(this)">
+    <rect x="20" y="360" width="200" height="64" rx="8" fill="#444441" stroke="#444441" stroke-width="0.5"/>
+    <text x="120" y="384" text-anchor="middle" font-size="13" font-weight="bold" fill="#D3D1C7">Your teaching practice</text>
+    <text x="120" y="404" text-anchor="middle" font-size="12" fill="#B4B2A9">Post-compulsory context</text>
+  </g>
+
+  <!-- ═══ CENTRE: Unit header ═══ -->
+  <g class="node" id="n-unit" data-id="unit" onclick="activate(this)">
+    <rect x="330" y="60" width="500" height="64" rx="10" fill="#1cab4e" stroke="#1cab4e" stroke-width="0.5"/>
+    <text x="580" y="84" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">Teaching Portfolio</text>
+    <text x="580" y="106" text-anchor="middle" font-size="12" fill="#e8f5e9">Graduate Certificate in Higher Education: Innovative Learning and Teaching</text>
+  </g>
+
+  <!-- ULOs -->
+  <g class="node" id="n-ulo1" data-id="ulo1" onclick="activate(this)">
+    <rect x="330" y="148" width="500" height="44" rx="6" fill="#f0f0f0" stroke="#dddddd" stroke-width="0.5"/>
+    <text x="356" y="170" font-size="13" font-weight="bold" fill="#0a1128" dominant-baseline="central">ULO 1</text>
+    <text x="410" y="170" font-size="12" fill="#474747" dominant-baseline="central">Critically reflect on teaching and learning practice</text>
+  </g>
+  <g class="node" id="n-ulo2" data-id="ulo2" onclick="activate(this)">
+    <rect x="330" y="198" width="500" height="44" rx="6" fill="#f0f0f0" stroke="#dddddd" stroke-width="0.5"/>
+    <text x="356" y="220" font-size="13" font-weight="bold" fill="#0a1128" dominant-baseline="central">ULO 2</text>
+    <text x="410" y="220" font-size="12" fill="#474747" dominant-baseline="central">Examine and articulate qualities of teaching excellence</text>
+  </g>
+  <g class="node" id="n-ulo3" data-id="ulo3" onclick="activate(this)">
+    <rect x="330" y="248" width="500" height="44" rx="6" fill="#f0f0f0" stroke="#dddddd" stroke-width="0.5"/>
+    <text x="356" y="270" font-size="13" font-weight="bold" fill="#0a1128" dominant-baseline="central">ULO 3</text>
+    <text x="410" y="270" font-size="12" fill="#474747" dominant-baseline="central">Employ a range of evidence types for teaching practice</text>
+  </g>
+  <g class="node" id="n-ulo4" data-id="ulo4" onclick="activate(this)">
+    <rect x="330" y="298" width="500" height="44" rx="6" fill="#f0f0f0" stroke="#dddddd" stroke-width="0.5"/>
+    <text x="356" y="320" font-size="13" font-weight="bold" fill="#0a1128" dominant-baseline="central">ULO 4</text>
+    <text x="410" y="320" font-size="12" fill="#474747" dominant-baseline="central">Communicate your conception of and approach to teaching</text>
+  </g>
+  <g class="node" id="n-ulo5" data-id="ulo5" onclick="activate(this)">
+    <rect x="330" y="348" width="500" height="44" rx="6" fill="#f0f0f0" stroke="#dddddd" stroke-width="0.5"/>
+    <text x="356" y="370" font-size="13" font-weight="bold" fill="#0a1128" dominant-baseline="central">ULO 5</text>
+    <text x="410" y="370" font-size="12" fill="#474747" dominant-baseline="central">Synthesise course learnings into a teaching portfolio</text>
+  </g>
+
+  <!-- Assessments -->
+  <g class="node" id="n-a1" data-id="a1" onclick="activate(this)">
+    <rect x="330" y="430" width="155" height="72" rx="8" fill="#1cab4e" stroke="#1cab4e" stroke-width="0.5"/>
+    <text x="407" y="452" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff" dominant-baseline="central">Assessment 1</text>
+    <text x="407" y="470" text-anchor="middle" font-size="12" fill="#e8f5e9" dominant-baseline="central">Teaching Philosophy</text>
+    <text x="407" y="488" text-anchor="middle" font-size="12" fill="#e8f5e9" dominant-baseline="central">20% — 1000 words</text>
+  </g>
+  <g class="node" id="n-a2" data-id="a2" onclick="activate(this)">
+    <rect x="502" y="430" width="155" height="72" rx="8" fill="#1cab4e" stroke="#1cab4e" stroke-width="0.5"/>
+    <text x="579" y="452" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff" dominant-baseline="central">Assessment 2</text>
+    <text x="579" y="470" text-anchor="middle" font-size="12" fill="#e8f5e9" dominant-baseline="central">Teaching Case</text>
+    <text x="579" y="488" text-anchor="middle" font-size="12" fill="#e8f5e9" dominant-baseline="central">30% — 1000 words</text>
+  </g>
+  <g class="node" id="n-a3" data-id="a3" onclick="activate(this)">
+    <rect x="674" y="430" width="155" height="72" rx="8" fill="#1cab4e" stroke="#1cab4e" stroke-width="0.5"/>
+    <text x="751" y="452" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff" dominant-baseline="central">Assessment 3</text>
+    <text x="751" y="470" text-anchor="middle" font-size="12" fill="#e8f5e9" dominant-baseline="central">Teaching Portfolio</text>
+    <text x="751" y="488" text-anchor="middle" font-size="12" fill="#e8f5e9" dominant-baseline="central">50% — ~1800 words</text>
+  </g>
+
+  <!-- Complete portfolio -->
+  <g class="node" id="n-portfolio" data-id="portfolio" onclick="activate(this)">
+    <rect x="430" y="552" width="298" height="56" rx="10" fill="#0F6E56" stroke="#0F6E56" stroke-width="1"/>
+    <text x="579" y="574" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff" dominant-baseline="central">Complete teaching portfolio</text>
+    <text x="579" y="594" text-anchor="middle" font-size="12" fill="#9FE1CB" dominant-baseline="central">Five PSF 2023 dimensions covered</text>
+  </g>
+
+  <!-- Pathways right -->
+  <g class="node" id="n-advhe" data-id="advhe" onclick="activate(this)">
+    <rect x="958" y="462" width="222" height="56" rx="8" fill="#3C3489" stroke="#3C3489" stroke-width="0.5"/>
+    <text x="1069" y="483" text-anchor="middle" font-size="13" font-weight="bold" fill="#CECBF6" dominant-baseline="central">Advance HE Fellowship</text>
+    <text x="1069" y="501" text-anchor="middle" font-size="12" fill="#AFA9EC" dominant-baseline="central">AFHEA / FHEA / SFHEA</text>
+  </g>
+  <g class="node" id="n-aaut" data-id="aaut" onclick="activate(this)">
+    <rect x="958" y="526" width="222" height="56" rx="8" fill="#3C3489" stroke="#3C3489" stroke-width="0.5"/>
+    <text x="1069" y="547" text-anchor="middle" font-size="13" font-weight="bold" fill="#CECBF6" dominant-baseline="central">AAUT</text>
+    <text x="1069" y="565" text-anchor="middle" font-size="12" fill="#AFA9EC" dominant-baseline="central">Teaching excellence awards</text>
+  </g>
+  <g class="node" id="n-herdsa" data-id="herdsa" onclick="activate(this)">
+    <rect x="958" y="590" width="222" height="56" rx="8" fill="#3C3489" stroke="#3C3489" stroke-width="0.5"/>
+    <text x="1069" y="611" text-anchor="middle" font-size="13" font-weight="bold" fill="#CECBF6" dominant-baseline="central">HERDSA Fellowship</text>
+    <text x="1069" y="629" text-anchor="middle" font-size="12" fill="#AFA9EC" dominant-baseline="central">Scholarly teaching recognition</text>
+  </g>
+
+  <!-- Institutional -->
+  <g class="node" id="n-inst" data-id="inst" onclick="activate(this)">
+    <rect x="430" y="640" width="298" height="56" rx="8" fill="#444441" stroke="#444441" stroke-width="0.5"/>
+    <text x="579" y="661" text-anchor="middle" font-size="13" font-weight="bold" fill="#D3D1C7" dominant-baseline="central">Institutional pathways</text>
+    <text x="579" y="679" text-anchor="middle" font-size="12" fill="#B4B2A9" dominant-baseline="central">Promotion, probation, review</text>
+  </g>
+
+</svg>
+
+<!-- Detail panel below map -->
+<div class="detail-panel" id="detail-panel">
+  <h3 id="dp-title"></h3>
+  <p id="dp-body"></p>
+  <div id="dp-tags"></div>
+  <span class="reset-btn" onclick="reset()">← Clear selection</span>
+</div>
+</div>
+
+<script>
+const connections = {
+  lc:        ['lc','unit','ulo1','ulo2','ulo4','a1'],
+  dt:        ['dt','unit','ulo1','ulo3','a1','a2'],
+  sotl:      ['sotl','unit','ulo3','ulo5','a2','a3'],
+  exp:       ['exp','unit','ulo1','ulo2','ulo3','ulo4','ulo5','a1','a2','a3'],
+  unit:      ['unit','ulo1','ulo2','ulo3','ulo4','ulo5','a1','a2','a3','portfolio','advhe','aaut','herdsa','inst'],
+  ulo1:      ['ulo1','a1','a2','a3','portfolio'],
+  ulo2:      ['ulo2','a1','a3','portfolio'],
+  ulo3:      ['ulo3','a2','a3','portfolio'],
+  ulo4:      ['ulo4','a1','a2','a3','portfolio'],
+  ulo5:      ['ulo5','a2','a3','portfolio'],
+  a1:        ['a1','ulo1','ulo2','ulo4','portfolio','advhe','aaut','herdsa','inst'],
+  a2:        ['a2','ulo1','ulo3','ulo4','ulo5','portfolio','advhe','aaut','herdsa','inst'],
+  a3:        ['a3','ulo1','ulo2','ulo3','ulo4','ulo5','portfolio','advhe','aaut','herdsa','inst'],
+  portfolio: ['portfolio','a1','a2','a3','advhe','aaut','herdsa','inst'],
+  advhe:     ['advhe','portfolio','a1','a2','a3'],
+  aaut:      ['aaut','portfolio','a1','a2','a3'],
+  herdsa:    ['herdsa','portfolio','a1','a2','a3'],
+  inst:      ['inst','portfolio','a1','a2','a3']
+};
+
+const details = {
+  lc:        { title: 'The Learning Cycle: Design and Curriculum', body: 'Covers curriculum design, constructive alignment, learning outcomes and unit design. Feeds into ULO 1, 2 and 4, and directly scaffolds Assessment 1 designing and planning dimension.', tags: ['ULO 1','ULO 2','ULO 4','Assessment 1'] },
+  dt:        { title: 'Design Thinking and Educational Innovation', body: 'Human-centred design, educational innovation and problem-solving. Supports evidence-informed and innovative practice across Assessments 1 and 2.', tags: ['ULO 1','ULO 3','Assessment 1','Assessment 2'] },
+  sotl:      { title: 'Research for the Scholarship of Learning and Teaching', body: 'Evidence-based inquiry, SoTL methods and scholarly teaching. Underpins the evidence and synthesis standards the rubrics reward in Assessments 2 and 3.', tags: ['ULO 3','ULO 5','Assessment 2','Assessment 3'] },
+  exp:       { title: 'Your teaching practice', body: 'Your existing post-compulsory teaching context, practice and professional identity. All three assessments draw directly on this. A prospective account pathway is available if you are not yet teaching.', tags: ['All ULOs','All assessments'] },
+  unit:      { title: 'Teaching Portfolio unit', body: 'The culminating unit of the Graduate Certificate. Brings together learning from all prior units and translates it into a complete, evidenced, professionally useful teaching portfolio aligned to PSF 2023.', tags: ['PSF 2023','AQF 8','12 weeks','3 assessments'] },
+  ulo1:      { title: 'ULO 1: Critical reflection', body: 'Critically reflect on your conception of teaching and learning, the nature of innovativeness and excellence, and the development of purposeful scholarly informed practice. Addressed in all three assessments.', tags: ['Assessment 1','Assessment 2','Assessment 3'] },
+  ulo2:      { title: 'ULO 2: Teaching excellence', body: 'Examine and articulate the qualities of teaching excellence, incorporating scholarly literature on learning and teaching. Addressed in Assessments 1 and 3.', tags: ['Assessment 1','Assessment 3'] },
+  ulo3:      { title: 'ULO 3: Evidence', body: 'Employ a range of evidence types to highlight approach to innovations and developments in your teaching practice. Addressed in Assessments 2 and 3.', tags: ['Assessment 2','Assessment 3'] },
+  ulo4:      { title: 'ULO 4: Communication', body: 'Communicate effectively your conception of teaching and learning, rationale and approach to practice. Addressed in all three assessments.', tags: ['Assessment 1','Assessment 2','Assessment 3'] },
+  ulo5:      { title: 'ULO 5: Portfolio synthesis', body: 'Synthesise course learnings into a teaching portfolio. Addressed in Assessments 2 and 3.', tags: ['Assessment 2','Assessment 3'] },
+  a1:        { title: 'Assessment 1: Teaching Philosophy — 20%', body: 'Context statement (~300 words) establishing your teaching role and professional framework, plus a focused evidenced reflective account of designing and planning learning (~700 words). 1000 words total.', tags: ['ULO 1','ULO 2','ULO 4','PSF A1','Designing and planning learning'] },
+  a2:        { title: 'Assessment 2: Teaching Case — 30%', body: 'Two evidenced reflective accounts of ~500 words each: how you teach and support learning, and how you assess and give feedback. 1000 words total.', tags: ['ULO 1','ULO 3','ULO 4','ULO 5','PSF A2','PSF A3'] },
+  a3:        { title: 'Assessment 3: Teaching Portfolio — 50%', body: 'Supporting and guiding learners, enhancing own practice through CPD, and a reflective synthesis. Plus revised A1 and A2 to form a complete portfolio. ~1800 words for the new sections.', tags: ['ULO 1','ULO 2','ULO 3','ULO 4','ULO 5','PSF A4','PSF A5'] },
+  portfolio: { title: 'Complete teaching portfolio', body: 'All five PSF 2023 Areas of Activity covered across the three assessments. Together approximately 3000 words of reflective writing that can form the basis of a Fellowship application or other professional recognition submission.', tags: ['PSF 2023','A1 to A5','V1 to V5','K1 to K5'] },
+  advhe:     { title: 'Advance HE Fellowship', body: 'The portfolio maps directly to the PSF 2023 Fellowship (Descriptor 2) structure. Curtin has supported pathways for AFHEA, FHEA and SFHEA recognition. Contact your unit coordinator for details.', tags: ['PSF 2023','AFHEA','FHEA','SFHEA'] },
+  aaut:      { title: 'Australian Awards for University Teaching', body: 'The AAUT framework for citations and teaching excellence awards. The portfolio provides the evidential foundation for AAUT nominations across individual and program categories.', tags: ['Citations','Excellence awards','Program awards'] },
+  herdsa:    { title: 'HERDSA Fellowship', body: 'The Higher Education Research and Development Society of Australasia Fellowship recognises scholarly approaches to teaching. The SoTL dimensions of the portfolio are directly relevant.', tags: ['Scholarly teaching','SoTL','HERDSA'] },
+  inst:      { title: 'Institutional pathways', body: 'The portfolio provides evidence for probation, promotion, performance review, and institutional teaching excellence award applications at your own institution.', tags: ['Promotion','Probation','Performance review','Teaching awards'] }
+};
+
+let active = null;
+
+function activate(el) {
+  const id = el.getAttribute('data-id');
+  if (active === id) { reset(); return; }
+  active = id;
+  const connected = connections[id] || [];
+
+  // Dim/highlight nodes
+  document.querySelectorAll('.node').forEach(n => {
+    const nid = n.getAttribute('data-id');
+    if (connected.includes(nid)) {
+      n.classList.remove('dimmed');
+      n.classList.add('highlighted');
+    } else {
+      n.classList.add('dimmed');
+      n.classList.remove('highlighted');
+    }
+  });
+
+  // Show relevant connection lines
+  document.querySelectorAll('.connection-line').forEach(line => {
+    const conns = (line.getAttribute('data-conn') || '').split(' ');
+    const relevant = conns.some(c => connected.includes(c)) && conns.some(c => c === id || connected.includes(c));
+    line.classList.toggle('active', relevant && conns.includes(id));
+  });
+
+  // Show detail panel
+  const d = details[id];
+  if (d) {
+    document.getElementById('dp-title').textContent = d.title;
+    document.getElementById('dp-body').textContent = d.body;
+    document.getElementById('dp-tags').innerHTML = d.tags.map(t => `<span class="tag">${t}</span>`).join('');
+    document.getElementById('detail-panel').classList.add('visible');
+  }
+}
+
+function reset() {
+  active = null;
+  document.querySelectorAll('.node').forEach(n => {
+    n.classList.remove('dimmed','highlighted');
+  });
+  document.querySelectorAll('.connection-line').forEach(l => l.classList.remove('active'));
+  document.getElementById('detail-panel').classList.remove('visible');
+}
+</script>
+</body>
+</html>
